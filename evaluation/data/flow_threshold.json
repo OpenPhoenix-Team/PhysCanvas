@@ -1,0 +1,944 @@
+{
+  "tau_per_side": [
+    0.0020616377461620435,
+    0.0025772246392443752,
+    0.0019224150234573945,
+    0.0019682192622487433
+  ],
+  "fit_only": true,
+  "rule": "Per side, select 3 lowest median GT-displacement frames from fit frames 1..10; pooled 99th percentile of valid marker norm. Frozen before generalization and inference.",
+  "limitation": "Low-motion GT prefix is a static-noise proxy, not independently annotated static contact.",
+  "units": "native physical XYZ cache units, same as scale 0.06",
+  "evidence": [
+    {
+      "episode_id": "unscrew_the_bottle_cap_rad_zb_0831_100_rollout_pi05_tactile_77src_armfix_7prompt_ckpt59999_000027",
+      "sides": [
+        {
+          "side": "left_wrist_0",
+          "frames": [
+            1,
+            2,
+            3
+          ],
+          "n": 2100,
+          "median_motion_candidates": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "q99": 0.0
+        },
+        {
+          "side": "left_wrist_1",
+          "frames": [
+            1,
+            2,
+            3
+          ],
+          "n": 2100,
+          "median_motion_candidates": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "q99": 0.0016313130544781955
+        },
+        {
+          "side": "right_wrist_0",
+          "frames": [
+            1,
+            2,
+            3
+          ],
+          "n": 2100,
+          "median_motion_candidates": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "q99": 3.5021954681718827e-05
+        },
+        {
+          "side": "right_wrist_1",
+          "frames": [
+            1,
+            2,
+            3
+          ],
+          "n": 2100,
+          "median_motion_candidates": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "q99": 0.0007644439255818514
+        }
+      ]
+    },
+    {
+      "episode_id": "unscrew_the_bottle_cap_red_zhf_0830_100_2_rollout_pi05_tactile_77src_armfix_7prompt_ckpt59999_000099",
+      "sides": [
+        {
+          "side": "left_wrist_0",
+          "frames": [
+            1,
+            2,
+            3
+          ],
+          "n": 2100,
+          "median_motion_candidates": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "q99": 0.0026657897990662515
+        },
+        {
+          "side": "left_wrist_1",
+          "frames": [
+            1,
+            2,
+            3
+          ],
+          "n": 2100,
+          "median_motion_candidates": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "q99": 0.003240719612222156
+        },
+        {
+          "side": "right_wrist_0",
+          "frames": [
+            1,
+            2,
+            3
+          ],
+          "n": 2100,
+          "median_motion_candidates": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "q99": 0.002538586433511224
+        },
+        {
+          "side": "right_wrist_1",
+          "frames": [
+            7,
+            8,
+            10
+          ],
+          "n": 2100,
+          "median_motion_candidates": [
+            0.00026034687922913227,
+            0.00023983709149521853,
+            0.0002211619368267307,
+            0.0002211619368267307,
+            0.0002696903154897053,
+            0.0002696607522198986,
+            0.00020470582312928274,
+            0.00020470582312928274,
+            0.00027894352515863015,
+            0.00021790552628034603
+          ],
+          "q99": 0.0014340351445917114
+        }
+      ]
+    },
+    {
+      "episode_id": "unscrew_the_bottle_cap_red_zhf_0829_100_rollout_pi05_tactile_77src_armfix_7prompt_ckpt59999_000067",
+      "sides": [
+        {
+          "side": "left_wrist_0",
+          "frames": [
+            1,
+            2,
+            3
+          ],
+          "n": 2100,
+          "median_motion_candidates": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "q99": 0.0006731653225141914
+        },
+        {
+          "side": "left_wrist_1",
+          "frames": [
+            1,
+            2,
+            3
+          ],
+          "n": 2100,
+          "median_motion_candidates": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "q99": 0.001033096266910432
+        },
+        {
+          "side": "right_wrist_0",
+          "frames": [
+            1,
+            2,
+            3
+          ],
+          "n": 2100,
+          "median_motion_candidates": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "q99": 0.0
+        },
+        {
+          "side": "right_wrist_1",
+          "frames": [
+            1,
+            2,
+            3
+          ],
+          "n": 2100,
+          "median_motion_candidates": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "q99": 0.0
+        }
+      ]
+    },
+    {
+      "episode_id": "use_only_the_right_arm_to_pick_up_the_test_tube_and_place_it_on_the_test_tube_rack_dan_saizi_0824_50_rollout_pi05_tactile_77src_armfix_7prompt_ckpt59999_000001",
+      "sides": [
+        {
+          "side": "left_wrist_0",
+          "frames": [
+            1,
+            2,
+            3
+          ],
+          "n": 2100,
+          "median_motion_candidates": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "q99": 0.0
+        },
+        {
+          "side": "left_wrist_1",
+          "frames": [
+            1,
+            2,
+            3
+          ],
+          "n": 2100,
+          "median_motion_candidates": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "q99": 0.00045959465205669403
+        },
+        {
+          "side": "right_wrist_0",
+          "frames": [
+            1,
+            2,
+            3
+          ],
+          "n": 2100,
+          "median_motion_candidates": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "q99": 0.0
+        },
+        {
+          "side": "right_wrist_1",
+          "frames": [
+            1,
+            2,
+            3
+          ],
+          "n": 2100,
+          "median_motion_candidates": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "q99": 0.0
+        }
+      ]
+    },
+    {
+      "episode_id": "use_both_arms_collaboratively_to_pick_up_the_test_tube_and_place_it_on_the_test_tube_rack_saizi_zb_0828_100_1_rollout_pi05_tactile_77src_armfix_7prompt_ckpt59999_000051",
+      "sides": [
+        {
+          "side": "left_wrist_0",
+          "frames": [
+            1,
+            2,
+            3
+          ],
+          "n": 2100,
+          "median_motion_candidates": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "q99": 0.0
+        },
+        {
+          "side": "left_wrist_1",
+          "frames": [
+            1,
+            2,
+            3
+          ],
+          "n": 2100,
+          "median_motion_candidates": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "q99": 0.002474670298397541
+        },
+        {
+          "side": "right_wrist_0",
+          "frames": [
+            1,
+            2,
+            3
+          ],
+          "n": 2100,
+          "median_motion_candidates": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "q99": 2.6107803569171333e-06
+        },
+        {
+          "side": "right_wrist_1",
+          "frames": [
+            1,
+            2,
+            3
+          ],
+          "n": 2100,
+          "median_motion_candidates": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "q99": 0.0
+        }
+      ]
+    },
+    {
+      "episode_id": "use_both_arms_collaboratively_to_pick_up_the_test_tube_and_place_it_on_the_test_tube_rack_saizi_zhf_0827_100_2_rollout_pi05_tactile_77src_armfix_7prompt_ckpt59999_000088",
+      "sides": [
+        {
+          "side": "left_wrist_0",
+          "frames": [
+            1,
+            2,
+            3
+          ],
+          "n": 2100,
+          "median_motion_candidates": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "q99": 0.0009610626078210684
+        },
+        {
+          "side": "left_wrist_1",
+          "frames": [
+            1,
+            2,
+            3
+          ],
+          "n": 2100,
+          "median_motion_candidates": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "q99": 0.0029467895138077216
+        },
+        {
+          "side": "right_wrist_0",
+          "frames": [
+            1,
+            2,
+            3
+          ],
+          "n": 2100,
+          "median_motion_candidates": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "q99": 0.0009274291805922985
+        },
+        {
+          "side": "right_wrist_1",
+          "frames": [
+            1,
+            2,
+            3
+          ],
+          "n": 2100,
+          "median_motion_candidates": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "q99": 0.0009953673847485217
+        }
+      ]
+    },
+    {
+      "episode_id": "separate_the_building_blocks_and_place_them_into_the_bags_with_matching_colors_0824_100_rollout_pi05_tactile_77src_armfix_7prompt_ckpt59999_000014",
+      "sides": [
+        {
+          "side": "left_wrist_0",
+          "frames": [
+            1,
+            2,
+            3
+          ],
+          "n": 2100,
+          "median_motion_candidates": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "q99": 0.00240146773867309
+        },
+        {
+          "side": "left_wrist_1",
+          "frames": [
+            1,
+            2,
+            3
+          ],
+          "n": 2100,
+          "median_motion_candidates": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "q99": 0.0014812833388713883
+        },
+        {
+          "side": "right_wrist_0",
+          "frames": [
+            1,
+            2,
+            3
+          ],
+          "n": 2100,
+          "median_motion_candidates": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "q99": 0.0022246154589811297
+        },
+        {
+          "side": "right_wrist_1",
+          "frames": [
+            1,
+            6,
+            7
+          ],
+          "n": 2100,
+          "median_motion_candidates": [
+            0.0,
+            7.645380561345874e-05,
+            7.645380561345874e-05,
+            9.977763329516165e-05,
+            9.977763329516165e-05,
+            4.608160816133022e-05,
+            4.608160816133022e-05,
+            7.072953303577378e-05,
+            7.072953303577378e-05,
+            8.653864855453393e-05
+          ],
+          "q99": 0.0028316633829606522
+        }
+      ]
+    },
+    {
+      "episode_id": "separate_the_building_blocks_and_place_them_into_the_bags_with_matching_colors_0824_50_rollout_pi05_tactile_77src_armfix_7prompt_ckpt59999_000003",
+      "sides": [
+        {
+          "side": "left_wrist_0",
+          "frames": [
+            1,
+            2,
+            3
+          ],
+          "n": 2100,
+          "median_motion_candidates": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "q99": 0.000649414025247097
+        },
+        {
+          "side": "left_wrist_1",
+          "frames": [
+            1,
+            2,
+            3
+          ],
+          "n": 2100,
+          "median_motion_candidates": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "q99": 0.0018945087767787063
+        },
+        {
+          "side": "right_wrist_0",
+          "frames": [
+            1,
+            2,
+            3
+          ],
+          "n": 2100,
+          "median_motion_candidates": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "q99": 0.0
+        },
+        {
+          "side": "right_wrist_1",
+          "frames": [
+            1,
+            2,
+            3
+          ],
+          "n": 2100,
+          "median_motion_candidates": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "q99": 0.001301727257668972
+        }
+      ]
+    },
+    {
+      "episode_id": "use_both_arms_to_solve_the_rubik_s_cube_v2_zb_0910_100_rollout_pi05_tactile_77src_armfix_7prompt_ckpt59999_000080",
+      "sides": [
+        {
+          "side": "left_wrist_0",
+          "frames": [
+            1,
+            2,
+            3
+          ],
+          "n": 2100,
+          "median_motion_candidates": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "q99": 0.0029940796084702015
+        },
+        {
+          "side": "left_wrist_1",
+          "frames": [
+            1,
+            2,
+            3
+          ],
+          "n": 2100,
+          "median_motion_candidates": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "q99": 0.003148190294741646
+        },
+        {
+          "side": "right_wrist_0",
+          "frames": [
+            1,
+            2,
+            3
+          ],
+          "n": 2100,
+          "median_motion_candidates": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "q99": 0.0029056486464105386
+        },
+        {
+          "side": "right_wrist_1",
+          "frames": [
+            4,
+            5,
+            2
+          ],
+          "n": 2100,
+          "median_motion_candidates": [
+            0.00026956236103612536,
+            0.00023885777613777756,
+            0.0002757335072534395,
+            0.0002344357382749921,
+            0.0002344357382749921,
+            0.000256866585834248,
+            0.000248821517454067,
+            0.0002594183265304421,
+            0.0002594183265304421,
+            0.00029994289650291724
+          ],
+          "q99": 0.0018419047509000048
+        }
+      ]
+    },
+    {
+      "episode_id": "use_both_arms_to_solve_the_rubik_s_cube_v2_zhf_0909_50_rollout_pi05_tactile_77src_armfix_7prompt_ckpt59999_000015",
+      "sides": [
+        {
+          "side": "left_wrist_0",
+          "frames": [
+            1,
+            2,
+            3
+          ],
+          "n": 2100,
+          "median_motion_candidates": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "q99": 0.0032641601283103228
+        },
+        {
+          "side": "left_wrist_1",
+          "frames": [
+            1,
+            2,
+            3
+          ],
+          "n": 2100,
+          "median_motion_candidates": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "q99": 0.002692886403528973
+        },
+        {
+          "side": "right_wrist_0",
+          "frames": [
+            1,
+            2,
+            3
+          ],
+          "n": 2100,
+          "median_motion_candidates": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "q99": 0.003167724469676614
+        },
+        {
+          "side": "right_wrist_1",
+          "frames": [
+            2,
+            5,
+            6
+          ],
+          "n": 2100,
+          "median_motion_candidates": [
+            0.0002375840648846117,
+            0.00014839476280642226,
+            0.00021954184692719007,
+            0.00021578460402935342,
+            0.00016598270816215339,
+            0.00016762507886032666,
+            0.00024310543845976085,
+            0.00022742614973695268,
+            0.00019854164391847247,
+            0.0002195600233710555
+          ],
+          "q99": 0.0030644707402316127
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "training_config": {
+    "models": {
+      "pretrained": "SET_WITH_--pretrained-vae",
+      "flow_shift": 5.0
+    },
+    "dataloaders": {
+      "test": {
+        "data_or_config": {
+          "_class_name": "UnifiedCacheDataset",
+          "cache_roots": [],
+          "cameras": {
+            "high": "base_0",
+            "left_wrist": "left_wrist_0",
+            "right_wrist": "right_wrist_0"
+          },
+          "target_hz": 10.0,
+          "strict_hz": true,
+          "tactile_sides": ["left_wrist_0", "left_wrist_1", "right_wrist_0", "right_wrist_1"],
+          "require_tactile": true,
+          "require_depth": false,
+          "require_motion": true,
+          "object_state_sampling_mode": "uniform",
+          "object_state_online_rewards": false
+        },
+        "batch_size_per_gpu": 1,
+        "num_workers": 0,
+        "filter": {"mode": "min_frames", "min_num_frames": 128},
+        "transform": {
+          "type": "WMRNDMixObjectStateCanvasTransforms",
+          "dst_size": ["__tuple__", 224, 224],
+          "num_frames": 129,
+          "sub_frames": 8,
+          "image_cfg": {"mask_generator": {"max_ref_frames": 1, "start": 1, "factor": 4}},
+          "is_train": true,
+          "fps": 16,
+          "max_stride": 1,
+          "num_views": 3,
+          "dual_reference_mode": "dual_memory",
+          "object_state_canvas_encoding": "lowfreq_bands_v1",
+          "object_state_canvas_height": 32,
+          "object_state_canvas_header_height": 8,
+          "object_state_canvas_label_map": "",
+          "object_state_visual_canvas_mode": "full",
+          "unified_wan_append_tactile_diff": true,
+          "unified_wan_append_tactile_flow": true,
+          "unified_wan_tactile_flow_encoding": "xyz_linear",
+          "unified_wan_tactile_flow_linear_max_disp": 0.06,
+          "unified_wan_include_depth": false
+        },
+        "sampler": {"type": "DefaultSampler", "shuffle": false},
+        "collator": {"is_equal": true}
+      }
+    }
+  }
+}
