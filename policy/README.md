@@ -118,7 +118,7 @@ local visual/state conditions advance. The final WM uses signed XYZ tactile
 flow (`xyz_linear`, displacement scale 0.06); all three generated components
 are fed back. Proprioception is the last commanded absolute joint target,
 not an independently predicted robot state. Initial motion gate: .001,
-at most four policy resamples, complete accepted chunk retained.
+at most four policy resamples; the accepted chunk is retained up to the requested frame budget.
 
 Default WM denoising is 30 steps; `--wm-steps 2` is a functional smoke override,
 not a quality evaluation. Standalone inference always uses Euler Flow-ODE and never loads an RM or stops for predicted success. `--frames N` counts future frames only (default 256); the reset is one extra display frame. For 300 frames there are 19 policy chunks, 38 fixed eight-frame WM calls and 301 video frames. Only the requested prefix of the final chunk is committed to the observation, video and actions. No reward CSV or success label is produced. `--max-chunks K` remains shorthand for `--frames 16*K`. The GRPO horizon and sampling mode are independent.
@@ -208,7 +208,7 @@ source scripts/runtime_env.sh building_blocks
 export PYTHONPATH="$PHYSCANVAS_ROOT/tests:$PYTHONPATH"
 "$PHYSCANVAS_PYTHON" -m unittest -v test_backend test_canvas test_reset_data \
   test_integration_config test_integration_env test_grpo_update_guards \
-  test_integration_layout test_reward_training
+  test_integration_layout test_reward_training test_standalone_rollout
 "$PHYSCANVAS_PYTHON" -m reward_training.smoke --output /absolute/path/to/NEW_rm_smoke
 "$PHYSCANVAS_PYTHON" -m physcanvas_pi05.smoke_optimizer --task building_blocks \
   --output /absolute/path/to/NEW_optimizer_smoke
