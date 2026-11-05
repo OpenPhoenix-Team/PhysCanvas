@@ -32,7 +32,8 @@ A short generation preview from the [project video](https://zebinx.github.io/Phy
 ## Todo list
 
 - [ ] World Model Training
-- [ ] RL Post-Training
+- [ ] Reward Model
+- [x] RL Post-Training
 - [x] Closed World Model Rollout
 - [x] [World Model Evaluation](https://www.modelscope.cn/models/ArteMe/PhysCanvas_model/files)
 - [x] [arXiv paper](https://arxiv.org/abs/2610.28613)
@@ -69,6 +70,19 @@ ln -sT "$PHYSCANVAS_STORE/weights" models
 
 Use `--source huggingface` in both download commands to use the Hugging Face mirror. The scripts verify the published hashes; the data command also unpacks and prepares the 20 episodes. Reserve at least 50 GiB of free space for the archives, prepared inputs, model parts, and assembled checkpoint. The resulting project paths are `models/epoch30_step300/transformer/` and `data/evaluation-data/full-episode/`; neither large directory is committed to Git. Wan VAE/scheduler, prompt embedding, and optional metric-model assets are separate prerequisites.
 
+## Single-episode example
+
+The first full-episode bottle-cap archive contains 249 aligned frames: RGB and tactile videos, sensor arrays, labels, and motion conditions for the entire episode.
+
+```bash
+tar -xzf data/evaluation-data/full-episode/bottle-cap/01_bottle-cap_full.tar.gz -C data
+python tools/raw_fixture.py prepare \
+  --fixture-dir data/fixture \
+  --output-dir data/bottle_full_prepared
+```
+
+`prepare` verifies the archive and creates model-ready inputs using only the compressed package. The motion conditions are derived inputs, so this is not a raw-sensor-only release.
+
 ## Closed-loop rollout and GRPO
 
 The [policy guide](policy/README.md) covers `building_blocks` and `test_tube` (both-arm test tube). Standalone Pi0.5 uses Flow-ODE and replans from the latest WM observation up to the requested frame count, without a reward model. GRPO collects Flow-SDE trajectories, scores generated RGB with a task-specific three-view RM and updates the action expert while keeping the visual and tactile encoders frozen.
@@ -80,7 +94,6 @@ The [policy guide](policy/README.md) covers `building_blocks` and `test_tube` (b
 | Train a three-view reward model | [Input format, labels and training commands](policy/docs/REWARD_TRAINING.md) |
 
 The [ModelScope weight repository](https://modelscope.cn/models/ArteMe/PhysCanvas_model/files) provides three PyTorch policies under `policy/`: `pi05_base`, `pi05_building_blocks_wm_grpo` and `pi05_test_tube_wm_grpo`. Keep the weights outside the code checkout. Policy training data, reset datasets and trained reward-model weights are not distributed. See the [validation record](policy/VALIDATION.md) for the checks performed and their scope. For WM-only evaluation, the [original setup](#setup) and [evaluation instructions](#evaluation) above still apply.
-
 
 ## Evaluation inputs
 
@@ -97,25 +110,12 @@ The [ModelScope weight repository](https://modelscope.cn/models/ArteMe/PhysCanva
 
 The [20 selected episodes](evaluation/data/fixed_20_ids.json) have five examples per task. The Setup commands download, verify, and prepare them. Use `--dry-run` to check the prepared cohort before inference.
 
-## Single-episode example
-
-The first full-episode bottle-cap archive contains 249 aligned frames: RGB and tactile videos, sensor arrays, labels, and motion conditions for the entire episode.
-
-```bash
-tar -xzf data/evaluation-data/full-episode/bottle-cap/01_bottle-cap_full.tar.gz -C data
-python tools/raw_fixture.py prepare \
-  --fixture-dir data/fixture \
-  --output-dir data/bottle_full_prepared
-```
-
-`prepare` verifies the archive and creates model-ready inputs using only the compressed package. The motion conditions are derived inputs, so this is not a raw-sensor-only release.
-
 ## Data Preparation
 
 The data folders use task names only:
 
-| Folder | Task | Archives |
-| --- | --- | ---: |
+| Folder | Task |
+| --- | ---: |
 | `evaluation-data/full-episode/bottle-cap/` | Bottle cap |
 | `evaluation-data/full-episode/test-tube/` | Test tube |
 | `evaluation-data/full-episode/building-blocks/` | Building blocks |
