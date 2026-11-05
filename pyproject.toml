@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "physcanvas-evaluation"
+version = "0.1.0"
+description = "Evaluation tools for PhysCanvas, a vision-tactile simulator for RL post-training"
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.10"
+dependencies = [
+  "numpy",
+  "scipy",
+  "Pillow",
+  "av",
+  "scikit-image",
+  "einops",
+  "lpips",
+  "torchmetrics[image]",
+  "safetensors",
+  "torch",
+  "torchvision",
+  "diffusers",
+  "transformers",
+  "opencv-python",
+  "decord",
+  "ftfy",
+  "pandas",
+  "giga-datasets==1.0.0",
+  "giga-train==1.0.0",
+]
+
+[project.scripts]
+physcanvas-infer-all-n = "evaluation.cli:infer_all_n"
+physcanvas-evaluate-n128 = "evaluation.cli:evaluate_n128"
+physcanvas-evaluate-reconstruction = "evaluation.cli:evaluate_reconstruction"
+physcanvas-evaluate-visual = "evaluation.cli:evaluate_visual"
+physcanvas-evaluate-all = "evaluation.cli:evaluate_all"
+
+[tool.setuptools]
+include-package-data = false
+
+[tool.setuptools.packages.find]
+include = ["evaluation*", "PhysCanvas*", "tools*"]
+
+[tool.setuptools.package-data]
+evaluation = ["data/fixed_20_ids.json", "data/public_eval_config.json", "data/flow_threshold.json"]

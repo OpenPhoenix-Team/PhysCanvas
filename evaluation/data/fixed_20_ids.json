@@ -1,0 +1,104 @@
+{
+  "episodes": [
+    {
+      "episode_id": "unscrew_the_bottle_cap_red_zhf_0830_100_1_rollout_pi05_tactile_77src_armfix_7prompt_ckpt59999_000038",
+      "task": "bottle",
+      "source_frames": 249
+    },
+    {
+      "episode_id": "unscrew_the_bottle_cap_red_zhf_0830_100_2_rollout_pi05_tactile_77src_armfix_7prompt_ckpt59999_000043",
+      "task": "bottle",
+      "source_frames": 286
+    },
+    {
+      "episode_id": "unscrew_the_bottle_cap_red_zhf_0830_100_rollout_pi05_tactile_77src_armfix_7prompt_ckpt59999_000048",
+      "task": "bottle",
+      "source_frames": 140
+    },
+    {
+      "episode_id": "unscrew_the_bottle_cap_red_zhf_0829_100_1_rollout_pi05_tactile_77src_armfix_7prompt_ckpt59999_000050",
+      "task": "bottle",
+      "source_frames": 236
+    },
+    {
+      "episode_id": "unscrew_the_bottle_cap_red_zhf_0830_100_2_rollout_pi05_tactile_77src_armfix_7prompt_ckpt59999_000004",
+      "task": "bottle",
+      "source_frames": 172
+    },
+    {
+      "episode_id": "use_both_arms_collaboratively_to_pick_up_the_test_tube_and_place_it_on_the_test_tube_rack_saizi_zhf_0827_100_2_rollout_pi05_tactile_77src_armfix_7prompt_ckpt59999_000072",
+      "task": "shiguan",
+      "source_frames": 188
+    },
+    {
+      "episode_id": "use_both_arms_collaboratively_to_pick_up_the_test_tube_and_place_it_on_the_test_tube_rack_saizi_zhf_0828_100_rollout_pi05_tactile_77src_armfix_7prompt_ckpt59999_000037",
+      "task": "shiguan",
+      "source_frames": 187
+    },
+    {
+      "episode_id": "use_both_arms_collaboratively_to_pick_up_the_test_tube_and_place_it_on_the_test_tube_rack_saizi_zhf_0828_100_rollout_pi05_tactile_77src_armfix_7prompt_ckpt59999_000017",
+      "task": "shiguan",
+      "source_frames": 204
+    },
+    {
+      "episode_id": "use_both_arms_collaboratively_to_pick_up_the_test_tube_and_place_it_on_the_test_tube_rack_saizi_zb_0828_100_1_rollout_pi05_tactile_77src_armfix_7prompt_ckpt59999_000003",
+      "task": "shiguan",
+      "source_frames": 201
+    },
+    {
+      "episode_id": "use_both_arms_collaboratively_to_pick_up_the_test_tube_and_place_it_on_the_test_tube_rack_saizi_zhf_0827_100_rollout_pi05_tactile_77src_armfix_7prompt_ckpt59999_000063",
+      "task": "shiguan",
+      "source_frames": 196
+    },
+    {
+      "episode_id": "separate_the_building_blocks_and_place_them_into_the_bags_with_matching_colors_0819_50_1~50_rollout_pi05_tactile_77src_armfix_7prompt_ckpt59999_000056",
+      "task": "jimu",
+      "source_frames": 223
+    },
+    {
+      "episode_id": "separate_the_building_blocks_and_place_them_into_the_bags_with_matching_colors_0819_50_1~50_rollout_pi05_tactile_77src_armfix_7prompt_ckpt59999_000092",
+      "task": "jimu",
+      "source_frames": 205
+    },
+    {
+      "episode_id": "separate_the_building_blocks_and_place_them_into_the_bags_with_matching_colors_pin_zhf_0826_80_rollout_pi05_tactile_77src_armfix_7prompt_ckpt59999_000017",
+      "task": "jimu",
+      "source_frames": 186
+    },
+    {
+      "episode_id": "separate_the_building_blocks_and_place_them_into_the_bags_with_matching_colors_0819_50_1~50_rollout_pi05_tactile_77src_armfix_7prompt_ckpt59999_000086",
+      "task": "jimu",
+      "source_frames": 217
+    },
+    {
+      "episode_id": "separate_the_building_blocks_and_place_them_into_the_bags_with_matching_colors_zzx_0825_100_rollout_pi05_tactile_77src_armfix_7prompt_ckpt59999_000038",
+      "task": "jimu",
+      "source_frames": 194
+    },
+    {
+      "episode_id": "use_both_arms_to_solve_the_rubik_s_cube_v2_zhf_0909_50_rollout_pi05_tactile_77src_armfix_7prompt_ckpt59999_000038",
+      "task": "mofang",
+      "source_frames": 275
+    },
+    {
+      "episode_id": "use_both_arms_to_solve_the_rubik_s_cube_v2_zhf_0912_130_rollout_pi05_tactile_77src_armfix_7prompt_ckpt59999_000012",
+      "task": "mofang",
+      "source_frames": 281
+    },
+    {
+      "episode_id": "use_both_arms_to_solve_the_rubik_s_cube_v2_zb_0911_100_rollout_pi05_tactile_77src_armfix_7prompt_ckpt59999_000049",
+      "task": "mofang",
+      "source_frames": 301
+    },
+    {
+      "episode_id": "use_both_arms_to_solve_the_rubik_s_cube_v2_zb_0911_100_rollout_pi05_tactile_77src_armfix_7prompt_ckpt59999_000067",
+      "task": "mofang",
+      "source_frames": 368
+    },
+    {
+      "episode_id": "use_both_arms_to_solve_the_rubik_s_cube_v2_zb_0910_100_rollout_pi05_tactile_77src_armfix_7prompt_ckpt59999_000034",
+      "task": "mofang",
+      "source_frames": 259
+    }
+  ]
+}

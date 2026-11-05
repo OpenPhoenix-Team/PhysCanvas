@@ -1,0 +1,21 @@
+{
+  "name": "pi05_arx_tactile_custom",
+  "exp_name": "sft_001",
+  "lerobot_root": "/path/to/new_bundle/lerobot",
+  "tactile_sidecar_root": "/path/to/new_bundle/tactile",
+  "initial_params": "/path/to/authorized_jax_checkpoint/params",
+  "tokenizer_file": "/path/to/paligemma_tokenizer.model",
+  "output_root": "/path/to/new_policy_training_outputs",
+  "asset_id": "arx_tactile_custom",
+  "batch_size": 64,
+  "num_train_steps": 60000,
+  "fsdp_devices": 8,
+  "num_workers": 4,
+  "learning_rate": 0.00005,
+  "warmup_steps": 1000,
+  "save_interval": 1000,
+  "keep_period": 5000,
+  "log_interval": 100,
+  "seed": 42,
+  "wandb_enabled": false
+}

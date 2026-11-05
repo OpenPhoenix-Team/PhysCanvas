@@ -1,0 +1,10 @@
+defaults:
+  - common
+  - _self_
+
+task: jimu
+task_prompt: "Separate the building blocks and place them into the bags with matching colors."
+task_noise_level: 0.5
+task_use_rel_reward: true
+# Difference of chunk success indicators, NOT frame probabilities.
+task_reward_aggregation: relative_sum

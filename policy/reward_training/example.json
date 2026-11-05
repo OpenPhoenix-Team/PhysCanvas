@@ -1,0 +1,13 @@
+{
+  "frames": "/private-data/reward_frames.jsonl",
+  "cache": "/private-data/three_view_rgb_224_uint8",
+  "split": "/private-data/episode_split.json",
+  "output": "/new-output/rm_experiment_001",
+  "epochs": 200,
+  "global_batch_size": 128,
+  "lr": 0.0001,
+  "warmup_epochs": 3,
+  "save_every": 20,
+  "threshold": 0.5,
+  "pretrained": true
+}
