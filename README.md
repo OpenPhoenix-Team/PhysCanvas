@@ -26,14 +26,16 @@ A short generation preview from the [project video](https://zebinx.github.io/Phy
 ## Contents
 
 - 🔨 [Setup](#setup)
+- ♻️ [WM Rollout](#wm_rollout)
 - 📊 [Evaluation](#evaluation)
 
 ## Todo list
 
-- [ ] World Model training and FM/VLA/WAM post-training code and weights
+- [ ] World Model Training
+- [ ] RL Post-Training
+- [x] Closed World Model Rollout
+- [x] [World Model Evaluation](https://www.modelscope.cn/models/ArteMe/PhysCanvas_model/files)
 - [x] [arXiv paper](https://arxiv.org/abs/2610.28613)
-- [x] [Epoch-30 evaluation weights](https://www.modelscope.cn/models/ArteMe/PhysCanvas_model/files)
-- [x] [Full-episode evaluation inputs](https://huggingface.co/XXXXing/PhysCanvas_model/tree/main/evaluation-data/full-episode) for 20 episodes
 
 ## Setup
 
@@ -66,6 +68,19 @@ ln -sT "$PHYSCANVAS_STORE/weights" models
 ```
 
 Use `--source huggingface` in both download commands to use the Hugging Face mirror. The scripts verify the published hashes; the data command also unpacks and prepares the 20 episodes. Reserve at least 50 GiB of free space for the archives, prepared inputs, model parts, and assembled checkpoint. The resulting project paths are `models/epoch30_step300/transformer/` and `data/evaluation-data/full-episode/`; neither large directory is committed to Git. Wan VAE/scheduler, prompt embedding, and optional metric-model assets are separate prerequisites.
+
+## Closed-loop rollout and GRPO
+
+The [policy guide](policy/README.md) covers `building_blocks` and `test_tube` (both-arm test tube). Standalone Pi0.5 uses Flow-ODE and replans from the latest WM observation up to the requested frame count, without a reward model. GRPO collects Flow-SDE trajectories, scores generated RGB with a task-specific three-view RM and updates the action expert while keeping the visual and tactile encoders frozen.
+
+| To run | Start here |
+|---|---|
+| Closed-loop rollout or GRPO | [Environment setup, required assets and launch commands](policy/README.md#environments) |
+| Prepare data and fine-tune tactile Pi0.5 | [Static-frame trimming and LeRobot conversion](policy/docs/DATA_PROCESSING.md) · [Supervised training and checkpoint conversion](policy/docs/POLICY_TRAINING.md) |
+| Train a three-view reward model | [Input format, labels and training commands](policy/docs/REWARD_TRAINING.md) |
+
+The [ModelScope weight repository](https://modelscope.cn/models/ArteMe/PhysCanvas_model/files) provides three PyTorch policies under `policy/`: `pi05_base`, `pi05_building_blocks_wm_grpo` and `pi05_test_tube_wm_grpo`. Keep the weights outside the code checkout. Policy training data, reset datasets and trained reward-model weights are not distributed. See the [validation record](policy/VALIDATION.md) for the checks performed and their scope. For WM-only evaluation, the [original setup](#setup) and [evaluation instructions](#evaluation) above still apply.
+
 
 ## Evaluation inputs
 
@@ -158,18 +173,6 @@ physcanvas-evaluate-reconstruction \
 Results are written to `data/visual_eval_examples/metrics-128/n128/`. Run `--resume` only with the same inputs and model. Metric definitions and asset requirements are in the [evaluation protocol](evaluation/ADDITIONAL_METRICS.md).
 
 Check `COMPLETED.json` and video frame counts before using the results. FID/FVD require the full cohort; one example is only a functionality check.
-
-## Pi0.5 policies: closed-loop rollout and GRPO
-
-The [policy guide](policy/README.md) covers `building_blocks` and `test_tube` (both-arm test tube). Standalone Pi0.5 uses Flow-ODE and replans from the latest WM observation up to the requested frame count, without a reward model. GRPO collects Flow-SDE trajectories, scores generated RGB with a task-specific three-view RM and updates the action expert while keeping the visual and tactile encoders frozen.
-
-| To run | Start here |
-|---|---|
-| Closed-loop rollout or GRPO | [Environment setup, required assets and launch commands](policy/README.md#environments) |
-| Prepare data and fine-tune tactile Pi0.5 | [Static-frame trimming and LeRobot conversion](policy/docs/DATA_PROCESSING.md) · [Supervised training and checkpoint conversion](policy/docs/POLICY_TRAINING.md) |
-| Train a three-view reward model | [Input format, labels and training commands](policy/docs/REWARD_TRAINING.md) |
-
-The [ModelScope weight repository](https://modelscope.cn/models/ArteMe/PhysCanvas_model/files) provides three PyTorch policies under `policy/`: `pi05_base`, `pi05_building_blocks_wm_grpo` and `pi05_test_tube_wm_grpo`. Keep the weights outside the code checkout. Policy training data, reset datasets and trained reward-model weights are not distributed. See the [validation record](policy/VALIDATION.md) for the checks performed and their scope. For WM-only evaluation, the [original setup](#setup) and [evaluation instructions](#evaluation) above still apply.
 
 ## Citation
 
