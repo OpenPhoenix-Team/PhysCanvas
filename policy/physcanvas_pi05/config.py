@@ -7,8 +7,8 @@ from hydra import compose, initialize_config_dir
 from omegaconf import DictConfig, OmegaConf
 
 
-TASK_ALIASES = {"jimu": "building_blocks", "shiguan": "test_cube"}
-TASK_NAMES = ("building_blocks", "test_cube", *TASK_ALIASES)
+TASK_ALIASES = {"jimu": "building_blocks", "shiguan": "test_tube"}
+TASK_NAMES = ("building_blocks", "test_tube", *TASK_ALIASES)
 
 
 def compose_rollout_config(task: str, overrides: Sequence[str] = ()) -> DictConfig:
@@ -22,8 +22,8 @@ def compose_rollout_config(task: str, overrides: Sequence[str] = ()) -> DictConf
 def compose_config(task: str, overrides: Sequence[str] = ()) -> DictConfig:
     """Compose an experiment without initializing Ray, CUDA, or models."""
     task = TASK_ALIASES.get(task, task)
-    if task not in ("building_blocks", "test_cube"):
-        raise ValueError("task must be building_blocks or test_cube (both-arm test tube)")
+    if task not in ("building_blocks", "test_tube"):
+        raise ValueError("task must be building_blocks or test_tube (both-arm test tube)")
     config_dir = Path(__file__).resolve().parents[1] / "configs"
     with initialize_config_dir(version_base="1.1", config_dir=str(config_dir)):
         cfg = compose(config_name=task, overrides=list(overrides))

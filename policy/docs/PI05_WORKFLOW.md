@@ -62,11 +62,11 @@ From the `policy/` directory, run:
 
 ```bash
 export PHYSCANVAS_PATHS_FILE="$HOME/.config/physcanvas/paths.sh"
-bash scripts/preflight.sh building_blocks --rollout --imports  # use test_cube for the both-arm test-tube task
+bash scripts/preflight.sh building_blocks --rollout --imports  # use test_tube for the both-arm test-tube task
 ```
 
 After model/normalizer contract checks, the same environment variables select
-that policy for `scripts/rollout.sh building_blocks` or `scripts/rollout.sh test_cube`.
+that policy for `scripts/rollout.sh building_blocks` or `scripts/rollout.sh test_tube`.
 Only after a satisfactory rollout and a prepared cluster should the explicit
 `RUN_TRAINING=1` GRPO entry be used. No such training is launched here.
 

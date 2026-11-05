@@ -14,7 +14,7 @@ case "${1:?task}" in
   building_blocks|jimu)
     export RESET_CACHE=/absolute/path/to/private/building_blocks/cache
     export RM_CHECKPOINT=/absolute/path/to/private/building_blocks/rm.pt ;;
-  test_cube|shiguan)
+  test_tube|shiguan)
     export RESET_CACHE=/absolute/path/to/private/test_tube/cache
     export RM_CHECKPOINT=/absolute/path/to/private/test_tube/rm.pt ;;
 esac

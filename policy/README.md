@@ -2,7 +2,7 @@
 
 This directory adds policy code without changing the existing PhysCanvas WM
 implementation. Tasks are **building blocks** (`building_blocks` in CLI/configs) and
-**both-arm test tube** (`test_cube`). Raw demonstrations, reset datasets and
+**both-arm test tube** (`test_tube`). Raw demonstrations, reset datasets and
 trained task reward models are **not distributed**. For GRPO, train your own RM. For both modes,
 provide your own calibrated robot assets and reset observations.
 
@@ -105,10 +105,10 @@ action or success annotation is used as a rollout condition.
 
 ```bash
 bash scripts/preflight.sh building_blocks --rollout --imports
-bash scripts/preflight.sh test_cube --rollout --imports
+bash scripts/preflight.sh test_tube --rollout --imports
 bash scripts/rollout.sh building_blocks --indices 0 --frames 300 \
   --output-dir /absolute/path/to/NEW_blocks_rollout
-bash scripts/rollout.sh test_cube --indices 0 --frames 300 \
+bash scripts/rollout.sh test_tube --indices 0 --frames 300 \
   --output-dir /absolute/path/to/NEW_test_tube_rollout
 ```
 
@@ -130,7 +130,7 @@ not a quality evaluation. Standalone inference always uses Euler Flow-ODE and ne
 bash scripts/preflight.sh building_blocks --imports  # includes private RM checks
 RUN_TRAINING=1 bash scripts/train_grpo.sh building_blocks
 # Alternative task (not simultaneously on the same GPUs):
-RUN_TRAINING=1 bash scripts/train_grpo.sh test_cube
+RUN_TRAINING=1 bash scripts/train_grpo.sh test_tube
 ```
 
 Defaults: 2 nodes/16 GPUs, collocated phase-offloaded actor/env/rollout,
@@ -161,7 +161,7 @@ private address of each node; exactly eight real visible GPUs per node:
 ```bash
 # Both nodes, from the same absolute policy directory:
 export PHYSCANVAS_PATHS_FILE=/absolute/path/to/your_paths.sh
-source scripts/runtime_env.sh test_cube
+source scripts/runtime_env.sh test_tube
 
 # Head only:
 export RLINF_NODE_RANK=0
@@ -176,7 +176,7 @@ ray start --address="$HEAD_PRIVATE_IP:6379" --node-ip-address="$WORKER_PRIVATE_I
 # Back on head after ray status reports both nodes and 16 GPUs:
 export RAY_ADDRESS="$HEAD_PRIVATE_IP:6379"
 ray status
-RUN_TRAINING=1 bash scripts/train_grpo.sh test_cube
+RUN_TRAINING=1 bash scripts/train_grpo.sh test_tube
 ```
 
 Do not use `--num-gpus` to advertise GPUs that do not physically exist. Shared

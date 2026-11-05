@@ -142,7 +142,7 @@ Back in the terminal, run preflight for the task you intend to use:
 ```bash
 # Run from policy/; choose one:
 bash scripts/preflight.sh building_blocks --rollout --imports      # building blocks
-# bash scripts/preflight.sh test_cube --rollout --imports # both-arm test tube
+# bash scripts/preflight.sh test_tube --rollout --imports # both-arm test tube
 ```
 
 Preflight loads `PHYSCANVAS_PATHS_FILE` automatically. In a new shell, export that file path again before running preflight, rollout or GRPO. Do not rely on exporting only `PI05_CHECKPOINT` in the terminal: entries in the paths file take effect when the launcher loads it. Preflight does not start rollout or training.

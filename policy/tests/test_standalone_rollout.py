@@ -52,7 +52,7 @@ class RolloutTests(unittest.TestCase):
             st.enter_context(patch.object(rollout, "PhysCanvasBackend", return_value=backend))
             st.enter_context(patch.object(wm_runtime, "PublishedWmRuntime"))
             st.enter_context(patch.object(wm_runtime, "validate_public_contract", return_value={}))
-            st.enter_context(patch.object(sys, "argv", ["rollout", "--task", "test_cube", "--frames", "300",
+            st.enter_context(patch.object(sys, "argv", ["rollout", "--task", "test_tube", "--frames", "300",
                                                       "--device", "cpu", "--output-dir", str(out)]))
             with contextlib.redirect_stdout(io.StringIO()):
                 rollout.main()

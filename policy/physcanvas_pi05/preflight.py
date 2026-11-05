@@ -72,7 +72,7 @@ def validate_experiment(
         required_names += [f"tactile/{side}.{kind}.npy"
                            for side in SIDE_ORDER for kind in ("pointcloud", "difference")]
         for episode_id in reset_dataset.episode_ids:
-            if cfg.task == "test_cube":
+            if cfg.task == "test_tube":
                 _require(episode_id.startswith("use_both_arms_collaboratively_"),
                          f"Shiguan reset is not from the double-arm pool: {episode_id}")
             for relative in required_names:

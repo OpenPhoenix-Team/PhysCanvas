@@ -161,7 +161,7 @@ Check `COMPLETED.json` and video frame counts before using the results. FID/FVD 
 
 ## Pi0.5 policies: closed-loop rollout and GRPO
 
-The [policy guide](policy/README.md) covers `building_blocks` and `test_cube` (both-arm test tube). Standalone Pi0.5 uses Flow-ODE and replans from the latest WM observation up to the requested frame count, without a reward model. GRPO collects Flow-SDE trajectories, scores generated RGB with a task-specific three-view RM and updates the action expert while keeping the visual and tactile encoders frozen.
+The [policy guide](policy/README.md) covers `building_blocks` and `test_tube` (both-arm test tube). Standalone Pi0.5 uses Flow-ODE and replans from the latest WM observation up to the requested frame count, without a reward model. GRPO collects Flow-SDE trajectories, scores generated RGB with a task-specific three-view RM and updates the action expert while keeping the visual and tactile encoders frozen.
 
 | To run | Start here |
 |---|---|

@@ -21,7 +21,7 @@ class ConfigTests(unittest.TestCase):
         self.addCleanup(self.env.stop)
 
     def test_two_tasks_share_public_wm_contract(self):
-        for task in ["building_blocks", "test_cube"]:
+        for task in ["building_blocks", "test_tube"]:
             cfg = compose_config(task)
             result = validate_experiment(cfg, check_assets=False)
             self.assertEqual(result["trajectories_per_update"], 512)
@@ -31,7 +31,7 @@ class ConfigTests(unittest.TestCase):
             self.assertEqual(cfg.env.train.prompt, cfg.task_prompt)
 
     def test_standalone_does_not_require_rm_or_change_grpo(self):
-        for task, old, level, relative in [("test_cube", "shiguan", .3, False), ("building_blocks", "jimu", .5, True)]:
+        for task, old, level, relative in [("test_tube", "shiguan", .3, False), ("building_blocks", "jimu", .5, True)]:
             with patch.dict(os.environ):
                 os.environ.pop("RM_CHECKPOINT", None)
                 cfg = compose_rollout_config(task)
