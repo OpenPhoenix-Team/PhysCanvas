@@ -159,6 +159,18 @@ Results are written to `data/visual_eval_examples/metrics-128/n128/`. Run `--res
 
 Check `COMPLETED.json` and video frame counts before using the results. FID/FVD require the full cohort; one example is only a functionality check.
 
+## Pi0.5 policies: closed-loop rollout and GRPO
+
+The [policy guide](policy/README.md) adds two tasks: **building blocks** (`jimu`) and **both-arm test tube** (`shiguan`). Pi0.5 proposes 16 actions from the current observation. The existing PhysCanvas world model generates two successive 8-frame segments, and a three-view reward model scores the generated frames. If the episode continues, Pi0.5 replans from the latest generated observation. During GRPO, the policy's action expert and projections are updated; the visual and tactile encoders stay frozen.
+
+| To run | Start here |
+|---|---|
+| Closed-loop rollout or GRPO | [Environment setup, required assets and launch commands](policy/README.md#environments) |
+| Prepare data and fine-tune tactile Pi0.5 | [Static-frame trimming and LeRobot conversion](policy/docs/DATA_PROCESSING.md) · [Supervised training and checkpoint conversion](policy/docs/POLICY_TRAINING.md) |
+| Train a three-view reward model | [Input format, labels and training commands](policy/docs/REWARD_TRAINING.md) |
+
+The [ModelScope weight repository](https://modelscope.cn/models/ArteMe/PhysCanvas_model/files) provides three PyTorch policies under `policy/`: `pi05_base`, `pi05_building_blocks_wm_grpo` and `pi05_test_tube_wm_grpo`. Keep the weights outside the code checkout. Policy training data, reset datasets and trained reward-model weights are not distributed. See the [validation record](policy/VALIDATION.md) for the checks performed and their scope. For WM-only evaluation, the [original setup](#setup) and [evaluation instructions](#evaluation) above still apply.
+
 ## Citation
 
 If you find PhysCanvas useful in your research, please cite our [paper](https://arxiv.org/abs/2610.28613):
@@ -178,15 +190,3 @@ If you find PhysCanvas useful in your research, please cite our [paper](https://
 ## Acknowledgements
 
 We thank the teams behind [WoVR](https://arxiv.org/abs/2602.13977), [iMac](https://github.com/imac-wm/iMac), and [RLinf](https://github.com/RLinf/RLinf) for their inspiring open-source work on world-model-based policy post-training, embodied world models for policy evaluation, and reinforcement learning infrastructure, respectively. Their contributions provided valuable inspiration for PhysCanvas.
-
-## Pi0.5 policies: closed-loop rollout and GRPO
-
-The [policy guide](policy/README.md) adds two tasks: **building blocks** (`jimu`) and **both-arm test tube** (`shiguan`). Pi0.5 proposes 16 actions from the current observation. The existing PhysCanvas world model generates two successive 8-frame segments, and a three-view reward model scores the generated frames. If the episode continues, Pi0.5 replans from the latest generated observation. During GRPO, the policy's action expert and projections are updated; the visual and tactile encoders stay frozen.
-
-| To run | Start here |
-|---|---|
-| Closed-loop rollout or GRPO | [Environment setup, required assets and launch commands](policy/README.md#environments) |
-| Prepare data and fine-tune tactile Pi0.5 | [Static-frame trimming and LeRobot conversion](policy/docs/DATA_PROCESSING.md) · [Supervised training and checkpoint conversion](policy/docs/POLICY_TRAINING.md) |
-| Train a three-view reward model | [Input format, labels and training commands](policy/docs/REWARD_TRAINING.md) |
-
-The [ModelScope weight repository](https://modelscope.cn/models/ArteMe/PhysCanvas_model/files) provides three PyTorch policies under `policy/`: `pi05_base`, `pi05_building_blocks_wm_grpo` and `pi05_test_tube_wm_grpo`. Keep the weights outside the code checkout. Policy training data, reset datasets and trained reward-model weights are not distributed. See the [validation record](policy/VALIDATION.md) for the checks performed and their scope. For WM-only evaluation, the [original setup](#setup) and [evaluation instructions](#evaluation) above still apply.
