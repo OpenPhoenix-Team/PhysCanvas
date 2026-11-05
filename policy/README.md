@@ -1,9 +1,9 @@
 # Pi0.5: tactile SFT, closed-loop PhysCanvas rollout, and GRPO
 
 This directory adds policy code without changing the existing PhysCanvas WM
-implementation. Tasks are **building blocks** (`jimu` in CLI/configs) and
-**both-arm test tube** (`shiguan`). Raw demonstrations, reset datasets and
-trained task reward models are **not distributed**. Train your own RM and
+implementation. Tasks are **building blocks** (`building_blocks` in CLI/configs) and
+**both-arm test tube** (`test_tube`). Raw demonstrations, reset datasets and
+trained task reward models are **not distributed**. For GRPO, train your own RM. For both modes,
 provide your own calibrated robot assets and reset observations.
 
 For **WM-only inference or evaluation**, use the existing
@@ -104,11 +104,11 @@ action or success annotation is used as a rollout condition.
 ## Closed-loop rollout
 
 ```bash
-bash scripts/preflight.sh jimu --imports
-bash scripts/preflight.sh shiguan --imports
-bash scripts/rollout.sh jimu --indices 0 --max-chunks 16 \
+bash scripts/preflight.sh building_blocks --rollout --imports
+bash scripts/preflight.sh test_tube --rollout --imports
+bash scripts/rollout.sh building_blocks --indices 0 --frames 300 \
   --output-dir /absolute/path/to/NEW_blocks_rollout
-bash scripts/rollout.sh shiguan --indices 0 --max-chunks 16 \
+bash scripts/rollout.sh test_tube --indices 0 --frames 300 \
   --output-dir /absolute/path/to/NEW_test_tube_rollout
 ```
 
@@ -118,21 +118,19 @@ local visual/state conditions advance. The final WM uses signed XYZ tactile
 flow (`xyz_linear`, displacement scale 0.06); all three generated components
 are fed back. Proprioception is the last commanded absolute joint target,
 not an independently predicted robot state. Initial motion gate: .001,
-at most four policy resamples, complete accepted chunk retained.
+at most four policy resamples; the accepted chunk is retained up to the requested frame budget.
 
 Default WM denoising is 30 steps; `--wm-steps 2` is a functional smoke override,
-not a quality evaluation. Policy defaults to flow-SDE; use
-`--policy-sampling eval` for ODE inference. Outputs include 10Hz MP4, initial
-reset PNG, actions, rewards CSV and replanning fingerprints. The extra reset
-frame means a full 256-frame generation gives 257 video frames.
+not a quality evaluation. Standalone inference always uses Euler Flow-ODE and never loads an RM or stops for predicted success. `--frames N` counts future frames only (default 256); the reset is one extra display frame. For 300 frames there are 19 policy chunks, 38 fixed eight-frame WM calls and 301 video frames. Only the requested prefix of the final chunk is committed to the observation, video and actions. No reward CSV or success label is produced. `--max-chunks K` remains shorthand for `--frames 16*K`. The GRPO horizon and sampling mode are independent.
 
 ## GRPO
 
 ```bash
 # Requires the real Ray cluster and all private assets; not a one-GPU demo.
-RUN_TRAINING=1 bash scripts/train_grpo.sh jimu
+bash scripts/preflight.sh building_blocks --imports  # includes private RM checks
+RUN_TRAINING=1 bash scripts/train_grpo.sh building_blocks
 # Alternative task (not simultaneously on the same GPUs):
-RUN_TRAINING=1 bash scripts/train_grpo.sh shiguan
+RUN_TRAINING=1 bash scripts/train_grpo.sh test_tube
 ```
 
 Defaults: 2 nodes/16 GPUs, collocated phase-offloaded actor/env/rollout,
@@ -163,7 +161,7 @@ private address of each node; exactly eight real visible GPUs per node:
 ```bash
 # Both nodes, from the same absolute policy directory:
 export PHYSCANVAS_PATHS_FILE=/absolute/path/to/your_paths.sh
-source scripts/runtime_env.sh shiguan
+source scripts/runtime_env.sh test_tube
 
 # Head only:
 export RLINF_NODE_RANK=0
@@ -178,7 +176,7 @@ ray start --address="$HEAD_PRIVATE_IP:6379" --node-ip-address="$WORKER_PRIVATE_I
 # Back on head after ray status reports both nodes and 16 GPUs:
 export RAY_ADDRESS="$HEAD_PRIVATE_IP:6379"
 ray status
-RUN_TRAINING=1 bash scripts/train_grpo.sh shiguan
+RUN_TRAINING=1 bash scripts/train_grpo.sh test_tube
 ```
 
 Do not use `--num-gpus` to advertise GPUs that do not physically exist. Shared
@@ -206,13 +204,13 @@ See [RM training](docs/REWARD_TRAINING.md). No trained RM weights are included.
 ## Tests
 
 ```bash
-source scripts/runtime_env.sh jimu
+source scripts/runtime_env.sh building_blocks
 export PYTHONPATH="$PHYSCANVAS_ROOT/tests:$PYTHONPATH"
 "$PHYSCANVAS_PYTHON" -m unittest -v test_backend test_canvas test_reset_data \
   test_integration_config test_integration_env test_grpo_update_guards \
-  test_integration_layout test_reward_training
+  test_integration_layout test_reward_training test_standalone_rollout
 "$PHYSCANVAS_PYTHON" -m reward_training.smoke --output /absolute/path/to/NEW_rm_smoke
-"$PHYSCANVAS_PYTHON" -m physcanvas_pi05.smoke_optimizer --task jimu \
+"$PHYSCANVAS_PYTHON" -m physcanvas_pi05.smoke_optimizer --task building_blocks \
   --output /absolute/path/to/NEW_optimizer_smoke
 ```
 

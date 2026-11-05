@@ -37,7 +37,7 @@ GPUs. `global_batch_size` must be divisible by `2*world_size`.
 
 Outputs: `metrics.jsonl`, `best.pt` (lowest balanced validation BCE), periodic
 `epoch_XXXX.pt`. These contain `model_state_dict`, threshold and view order;
-they load into the rollout scorer. Optimizer resume is not implemented. Training inputs, logs and trained RM weights are not distributed.
+they load into the GRPO environment scorer. Optimizer resume is not implemented. Training inputs, logs and trained RM weights are not distributed.
 
 GPU smoke with generated images only:
 

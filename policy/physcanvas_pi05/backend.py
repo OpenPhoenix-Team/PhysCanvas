@@ -127,7 +127,10 @@ class PhysCanvasBackend:
         return result
 
     def rollout16(self, session_ids, actions, *, audit_session_id=None,
-                  return_policy_tactile_video=False):
+                  return_policy_tactile_video=False, frames=16):
+        """Commit a prefix of a policy chunk. GRPO always uses all 16 by default."""
+        if type(frames) is not int or not 1 <= frames <= 16:
+            raise ValueError("frames must be an integer between 1 and 16")
         from .canvas import build_motion_replay, decode_policy_visual
         actions = np.asarray(actions, dtype=np.float32)
         if actions.shape != (len(session_ids), 16, 14) or not np.isfinite(actions).all():
@@ -139,12 +142,13 @@ class PhysCanvasBackend:
         if any(sid not in self.sessions for sid in session_ids):
             raise KeyError("Unknown/expired session ID")
         result = {"session_ids": list(session_ids), "observations": [],
-                  "segments": 2, "frames_per_segment": 8}
+                  "segments": (frames + 7) // 8, "frames_per_segment": 8}
         videos, tactile_videos = [], []
         for index, sid in enumerate(session_ids):
             session = self.sessions[sid]
             rgb_parts, tactile_parts, motion_parts, diff_parts = [], [], [], []
-            for offset in (0, 8):
+            for offset in range(0, frames, 8):
+                take = min(8, frames - offset)
                 action8 = actions[index, offset:offset + 8]
                 qpos9 = np.concatenate([session.qpos[None], action8], axis=0)
                 motion = self.renderer.frames(qpos9, f"{sid}-frame{session.frames}")
@@ -152,16 +156,16 @@ class PhysCanvasBackend:
                 if tuple(generated.shape) != (1, 9, 3, 672, 672):
                     raise RuntimeError(f"WM must return reference + 8 frames: {generated.shape}")
                 rgb, tactile = decode_policy_visual(generated[:, 1:])
-                rgb_parts.append(rgb)
-                tactile_parts.append(tactile)
-                motion_parts.append(motion[1:])
-                diff = generated[0, 1:, :, 224:448].permute(0, 2, 3, 1)
+                rgb_parts.append(rgb[:take])
+                tactile_parts.append(tactile[:take])
+                motion_parts.append(motion[1:take + 1])
+                diff = generated[0, 1:take + 1, :, 224:448].permute(0, 2, 3, 1)
                 diff_parts.append(((diff + 1) * 127.5).clamp(0, 255).to(torch.uint8).numpy())
                 # No reset-frame reuse, VAE re-encoding of RGB uint8, or state thresholding.
-                session.visual = generated[:, -1:].clone()
-                session.state_canvas = generated_state[:, -1:].clone()
-                session.qpos = action8[-1].copy()
-                session.frames += 8
+                session.visual = generated[:, take:take + 1].clone()
+                session.state_canvas = generated_state[:, take:take + 1].clone()
+                session.qpos = action8[take - 1].copy()
+                session.frames += take
             videos.append(np.concatenate(rgb_parts))
             tactile_videos.append(np.concatenate(tactile_parts))
             result["observations"].append(self._observation(session))

@@ -2,7 +2,9 @@ defaults:
   - common
   - _self_
 
-task: shiguan
+task: test_tube
+# Internal WM vocabulary is fixed by the published checkpoint.
+task_wm_id: shiguan
 task_prompt: "Use both arms collaboratively to pick up the test tube and place it on the test tube rack."
 task_noise_level: 0.3
 task_use_rel_reward: false

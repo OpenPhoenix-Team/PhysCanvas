@@ -1,14 +1,11 @@
 """Frozen Pi0.5 closed-loop evaluation, using the same backend as GRPO.
 
-No optimizer, backwards pass, ground-truth future action, or future RGB is used.
-Default policy sampling is the training-time flow-SDE sampler, for comparison
-with GRPO trajectories. Explicit --policy-sampling eval selects ODE inference.
+Euler Flow-ODE with fixed frame budget. No task RM, rewards, optimizer or future GT.
 """
 
 from __future__ import annotations
 
 import argparse
-import csv
 from datetime import datetime, timezone
 import gc
 import hashlib
@@ -21,7 +18,7 @@ import torch
 from PIL import Image, ImageDraw
 
 from .backend import PhysCanvasBackend
-from .config import compose_config
+from .config import compose_rollout_config, TASK_NAMES
 
 
 class AuditVideo:
@@ -71,18 +68,20 @@ def observation_fingerprint(observation: dict) -> str:
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--task", choices=("jimu", "shiguan"), required=True)
+    parser.add_argument("--task", choices=TASK_NAMES, required=True)
     parser.add_argument("--indices", default="0", help="Comma-separated reset manifest indices")
-    parser.add_argument("--max-chunks", type=int, default=16)
+    length = parser.add_mutually_exclusive_group()
+    length.add_argument("--frames", type=int, help="Future frames, excluding reset (default: 256)")
+    length.add_argument("--max-chunks", type=int, help="Compatibility: request this many full 16-frame chunks")
     parser.add_argument("--device", default="cuda:0")
     parser.add_argument("--seed", type=int, default=20261104)
     parser.add_argument("--output-dir", type=Path, required=True)
-    parser.add_argument("--policy-sampling", choices=("train", "eval"), default="train")
     parser.add_argument("--wm-steps", type=int, default=None)
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
-    if not 1 <= args.max_chunks <= 16:
-        parser.error("max-chunks must be in [1,16]")
+    budget = args.frames if args.frames is not None else (16 * args.max_chunks if args.max_chunks is not None else 256)
+    if budget < 1:
+        parser.error("requested length must be positive")
     indices = [int(x) for x in args.indices.split(",")]
     if not indices or len(set(indices)) != len(indices) or min(indices) < 0:
         parser.error("indices must be nonnegative and unique")
@@ -91,33 +90,29 @@ def main():
         if args.wm_steps <= 0:
             parser.error("wm-steps must be positive")
         overrides.append(f"env.train.world_model.num_inference_steps={args.wm_steps}")
-    cfg = compose_config(args.task, overrides)
+    cfg = compose_rollout_config(args.task, overrides)
     from omegaconf import OmegaConf
     from .wm_runtime import PublishedWmRuntime, validate_public_contract
     identity = validate_public_contract(cfg.env.train.world_model, hash_weights=not args.dry_run)
     print(json.dumps({"wm": identity, "indices": indices,
-                      "max_generated_frames": args.max_chunks * 16,
-                      "policy_sampling": args.policy_sampling,
+                      "requested_future_frames": budget,
+                      "policy_sampling": "eval",
                       "wm_steps": cfg.env.train.world_model.num_inference_steps}, indent=2), flush=True)
     if args.dry_run:
         return
     # Never overwrite a prior visualization or add artifacts into a source tree.
     args.output_dir.mkdir(parents=True, exist_ok=False)
-    (args.output_dir / "config.yaml").write_text(OmegaConf.to_yaml(cfg, resolve=True))
+    (args.output_dir / "config.yaml").write_text(OmegaConf.to_yaml({"task": cfg.task, "frames": budget, "policy_sampling": "flow_ode",
+        "actor_model": OmegaConf.to_container(cfg.actor.model, resolve=True),
+        "world_model": OmegaConf.to_container(cfg.env.train.world_model, resolve=True), "prompt": cfg.env.train.prompt}))
     torch.manual_seed(args.seed)
     np.random.seed(args.seed)
     if args.device.startswith("cuda"):
         torch.cuda.set_device(torch.device(args.device))
     from rlinf.models.embodiment.openpi_rlinf import get_model
     from rlinf.envs.world_model.jimu_wm_protocol import stack_policy_observations
-    from rlinf.envs.world_model.jimu_reward_model import ThreeViewRewardScorer
 
     policy = get_model(cfg.actor.model).eval().requires_grad_(False).cpu()
-    reward = ThreeViewRewardScorer(
-        cfg.env.train.reward_model.checkpoint, device="cpu",
-        threshold=float(cfg.env.train.reward_model.threshold),
-        batch_size=int(cfg.env.train.reward_model.batch_size),
-    )
     results = []
     shared_runtime = PublishedWmRuntime(cfg.env.train.world_model, args.device)
     for reset_index in indices:
@@ -137,11 +132,11 @@ def main():
             "observation.images.base_0", "observation.images.left_wrist_0", "observation.images.right_wrist_0")], axis=1)
         Image.fromarray(initial_rgb).save(output / "reset.png")
         initial_motion = backend.renderer.frames(np.repeat(observation["observation.state"][None], 9, axis=0), sid)[0]
-        video.write(initial_rgb, initial_motion, "RESET condition | RGB / motion / overlay | no reward assigned")
-        rows, chunks, action_parts = [], [], []
-        succeeded = False
+        video.write(initial_rgb, initial_motion, "RESET condition | RGB / motion / overlay | frame 0")
+        chunks, action_parts = [], []
         try:
-            for chunk_index in range(args.max_chunks):
+            for start in range(0, budget, 16):
+                chunk_index, take = start // 16, min(16, budget - start)
                 policy_obs = stack_policy_observations(
                     [observation], prompt=cfg.env.train.prompt, policy_chunk_index=chunk_index
                 )
@@ -151,7 +146,7 @@ def main():
                 policy.to(args.device)
                 with torch.inference_mode():
                     actions, policy_info = policy.predict_action_batch(
-                        policy_obs, mode=args.policy_sampling, compute_values=False
+                        policy_obs, mode="eval", compute_values=False
                     )
                 if torch.is_tensor(actions):
                     actions = actions.detach().float().cpu().numpy()
@@ -161,42 +156,29 @@ def main():
                 gc.collect()
                 if torch.cuda.is_available():
                     torch.cuda.empty_cache()
-                response = backend.rollout16([sid], actions, audit_session_id=sid)
+                response = backend.rollout16([sid], actions, audit_session_id=sid, frames=take)
                 panels = response["rgb_panel_video"]
-                probabilities, labels = reward.score_panel_video(panels)
-                probabilities, labels = probabilities[0].cpu().numpy(), labels[0].cpu().numpy()
-                succeeded = bool(np.any(labels))
                 observation = response["observations"][0]
                 chunks.append({"chunk_index": chunk_index, "policy_observation_sha256": before,
                                "next_observation_sha256": observation_fingerprint(observation),
                                "next_frame_index": observation["wm"]["generated_frame_index"],
-                               "success": succeeded})
-                action_parts.append(actions[0])
-                for t in range(16):
+                               "executed_frames": take})
+                action_parts.append(actions[0, :take])
+                for t in range(take):
                     frame = chunk_index * 16 + t + 1
-                    emitted = int(succeeded and t == 15)
-                    rows.append({"frame": frame, "chunk": chunk_index, "p_success": float(probabilities[t]),
-                                 "label": int(labels[t]), "emitted_reward": emitted})
                     video.write(panels[0, t], response["audit_motion_panel_video"][t],
-                                f"frame={frame:03d} chunk={chunk_index:02d} p={probabilities[t]:.4f} label={int(labels[t])} reward={emitted}")
-                print(f"[rollout] reset={reset_index} chunk={chunk_index + 1} pmax={probabilities.max():.4f} success={succeeded}", flush=True)
-                if succeeded:
-                    break
+                                f"frame={frame:03d} chunk={chunk_index:02d} Pi0.5 ODE")
+                print(f"[rollout] reset={reset_index} frames={start + take}/{budget}", flush=True)
         finally:
             video.close()
             backend.close()
-        with (output / "rewards.csv").open("w", newline="") as handle:
-            writer = csv.DictWriter(handle, fieldnames=list(rows[0]))
-            writer.writeheader()
-            writer.writerows(rows)
         np.save(output / "actions.npy", np.concatenate(action_parts))
         result = {"reset_index": reset_index, "episode_id": observation["wm"]["episode_id"],
-                  "generated_frames": len(rows), "video_frames": video.frames, "fps": 10,
-                  "trajectory_return": int(succeeded), "success": succeeded,
-                  "policy_sampling": args.policy_sampling, "policy_noise_level": float(cfg.actor.model.openpi.noise_level),
+                  "generated_frames": video.frames - 1, "wm_computed_frames": ((budget + 7) // 8) * 8, "video_frames": video.frames, "fps": 10,
+                  "rm_scoring": False, "termination": "frame_budget",
+                  "policy_sampling": "eval", "sampler": "flow_ode",
                   "wm_steps": int(cfg.env.train.world_model.num_inference_steps), "wm_identity": identity,
-                  "reward_checkpoint": str(cfg.env.train.reward_model.checkpoint),
-                  "reward_threshold": float(reward.threshold), "chunks": chunks,
+                  "chunks": chunks,
                   "created_utc": datetime.now(timezone.utc).isoformat()}
         (output / "result.json").write_text(json.dumps(result, indent=2))
         results.append(result)

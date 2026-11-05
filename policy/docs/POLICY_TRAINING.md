@@ -129,7 +129,7 @@ export PHYSCANVAS_PATHS_FILE="$HOME/.config/physcanvas/paths.sh"
 test -e "$PHYSCANVAS_PATHS_FILE" || cp scripts/local_paths.example.sh "$PHYSCANVAS_PATHS_FILE"
 ```
 
-Edit the private file and fill in the runtime, WM, renderer, tokenizer, reset-cache and task-RM paths. In that same file, replace the two policy entries with the actual paths from your conversion. Use the converted **checkpoint directory** and the **normalization JSON from the same source checkpoint**:
+Edit the private file and fill in the runtime, WM, renderer, tokenizer, reset-cache and, for GRPO only, task-RM paths. In that same file, replace the two policy entries with the actual paths from your conversion. Use the converted **checkpoint directory** and the **normalization JSON from the same source checkpoint**:
 
 ```bash
 # Inside the private paths file (replace the example paths):
@@ -141,8 +141,8 @@ Back in the terminal, run preflight for the task you intend to use:
 
 ```bash
 # Run from policy/; choose one:
-bash scripts/preflight.sh jimu --imports      # building blocks
-# bash scripts/preflight.sh shiguan --imports # both-arm test tube
+bash scripts/preflight.sh building_blocks --rollout --imports      # building blocks
+# bash scripts/preflight.sh test_tube --rollout --imports # both-arm test tube
 ```
 
 Preflight loads `PHYSCANVAS_PATHS_FILE` automatically. In a new shell, export that file path again before running preflight, rollout or GRPO. Do not rely on exporting only `PI05_CHECKPOINT` in the terminal: entries in the paths file take effect when the launcher loads it. Preflight does not start rollout or training.
