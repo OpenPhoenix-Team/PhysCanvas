@@ -55,19 +55,15 @@ conversion commands.
 
 ## Connect a newly converted policy to rollout / GRPO
 
-Use the **same conversion's** parameters and normalization statistics together:
+Configure the converted checkpoint and its matching normalization statistics
+in your private paths file as described in the
+[policy training guide](POLICY_TRAINING.md#feed-the-correct-pair-to-closed-loop-rollout--grpo).
+From the `policy/` directory, run:
 
 ```bash
-export PI05_CHECKPOINT=/absolute/path/to/new_converted_policy
-export PI05_NORM_STATS=/absolute/path/to/new_converted_policy/assets/YOUR_ASSET_ID/norm_stats.json
-
-bash /mnt/workspace/xzb/workspace/physcanvas_pi05_experiments/scripts/preflight.sh jimu --imports
+export PHYSCANVAS_PATHS_FILE="$HOME/.config/physcanvas/paths.sh"
+bash scripts/preflight.sh jimu --imports  # use shiguan for the both-arm test-tube task
 ```
-
-The placeholders above are not current server bindings. Use the exact output
-paths recorded by the conversion command. Merely overriding
-`PI05_CHECKPOINT` is insufficient: the existing server-local launch bindings
-otherwise still default `PI05_NORM_STATS` to the original 59999 statistics.
 
 After model/normalizer contract checks, the same environment variables select
 that policy for `scripts/rollout.sh jimu` or `scripts/rollout.sh shiguan`.
