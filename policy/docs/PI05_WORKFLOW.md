@@ -13,7 +13,7 @@ Nothing in this preparation starts formal training or publishes code/weights.
 | Write training dataset | `data_processing/` | LeRobot v2.1, three RGB views, 14-dimensional state/action, tactile sidecar |
 | Compute normalization, supervised fine-tune | `policy_training/` | Original tactile-aware JAX OpenPI implementation used for arm-fix 59999 |
 | Convert inference parameters | `policy_training/` | Tactile-aware JAX → RLinf PyTorch conversion, with matching norm stats |
-| Closed-loop inference | `scripts/rollout.sh` | Converted policy, current published PhysCanvas WM, task RM |
+| Closed-loop inference | `scripts/rollout.sh` | Converted policy, current published PhysCanvas WM (no RM) |
 | GRPO | `scripts/train_grpo.sh` | Existing RLinf flow-SDE policy update with the new public WM backend |
 
 The standalone SFT source snapshot is deliberately separate from
@@ -62,11 +62,11 @@ From the `policy/` directory, run:
 
 ```bash
 export PHYSCANVAS_PATHS_FILE="$HOME/.config/physcanvas/paths.sh"
-bash scripts/preflight.sh jimu --imports  # use shiguan for the both-arm test-tube task
+bash scripts/preflight.sh building_blocks --rollout --imports  # use test_cube for the both-arm test-tube task
 ```
 
 After model/normalizer contract checks, the same environment variables select
-that policy for `scripts/rollout.sh jimu` or `scripts/rollout.sh shiguan`.
+that policy for `scripts/rollout.sh building_blocks` or `scripts/rollout.sh test_cube`.
 Only after a satisfactory rollout and a prepared cluster should the explicit
 `RUN_TRAINING=1` GRPO entry be used. No such training is launched here.
 

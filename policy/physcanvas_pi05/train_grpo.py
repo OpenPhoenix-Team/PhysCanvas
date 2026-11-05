@@ -7,14 +7,14 @@ from pathlib import Path
 
 from omegaconf import OmegaConf
 
-from physcanvas_pi05.config import compose_config
+from physcanvas_pi05.config import compose_config, TASK_NAMES
 from physcanvas_pi05.preflight import validate_experiment
 from physcanvas_pi05.topology import validate_actor_env_layout
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--task", choices=["jimu", "shiguan"], required=True)
+    parser.add_argument("--task", choices=TASK_NAMES, required=True)
     parser.add_argument("overrides", nargs="*", help="Hydra key=value overrides")
     args = parser.parse_args()
     if os.environ.get("RUN_TRAINING") != "1":

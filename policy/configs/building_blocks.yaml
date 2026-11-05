@@ -2,7 +2,9 @@ defaults:
   - common
   - _self_
 
-task: jimu
+task: building_blocks
+# Internal WM vocabulary is fixed by the published checkpoint.
+task_wm_id: jimu
 task_prompt: "Separate the building blocks and place them into the bags with matching colors."
 task_noise_level: 0.5
 task_use_rel_reward: true

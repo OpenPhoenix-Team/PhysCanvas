@@ -16,7 +16,7 @@ import numpy as np
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--task", choices=("jimu", "shiguan"), required=True)
+    parser.add_argument("--task", choices=("building_blocks", "test_cube", "jimu", "shiguan"), required=True)
     parser.add_argument("--candidate", choices=("original_jimu", "standard0822"), required=True)
     parser.add_argument("--root", type=Path, default=Path(os.environ["PHYSCANVAS_EXPERIMENT_ROOT"]))
     args = parser.parse_args()
@@ -50,7 +50,7 @@ def main() -> None:
         "wrist_mesh_tool_offset_y": 0.0,
         "wrist_mesh_tool_offset_z": 0.0,
     }
-    episode = sorted((cache_roots[args.task] / "episodes").glob("*/qpos.npy"))[0].parent
+    episode = sorted((cache_roots[{"building_blocks": "jimu", "test_cube": "shiguan"}.get(args.task, args.task)] / "episodes").glob("*/qpos.npy"))[0].parent
     qpos = np.asarray(np.load(episode / "qpos.npy", mmap_mode="r")[:1])
     renderer = module.ARXLink678GrayMotionRenderer(settings)
     predicted = renderer.frames({"qpos": qpos, "episode_id": episode.name}, np.array([0]), (224, 224))

@@ -79,7 +79,7 @@ env:
       prompt_embedding: ${oc.env:PROMPT_EMBEDDING}
       reset_cache: ${oc.env:RESET_CACHE}
       selection_manifest: ${oc.env:RESET_SELECTION}
-      task: ${task}
+      task: ${task_wm_id}
       dtype: bfloat16
       num_inference_steps: 30
       tactile_flow_encoding: xyz_linear

@@ -8,7 +8,7 @@ from pathlib import Path
 
 from omegaconf import DictConfig, OmegaConf
 
-from physcanvas_pi05.config import compose_config
+from physcanvas_pi05.config import compose_config, compose_rollout_config, TASK_NAMES
 
 
 def _require(condition: bool, message: str) -> None:
@@ -54,9 +54,9 @@ def validate_experiment(
     _require(cfg.algorithm.rewards_lower_bound == 0.125 and cfg.algorithm.rewards_upper_bound == 0.875,
              "Keep groups with 1..7 successes out of 8")
     _require(not cfg.reward.use_reward_model, "Task RM runs inside EnvWorker, not a separate RLinf reward worker")
-    expected_mode = "relative_sum" if cfg.task == "jimu" else "binary_any_success"
+    expected_mode = "relative_sum" if cfg.task == "building_blocks" else "binary_any_success"
     _require(env.trajectory_reward_aggregation == expected_mode, "Task reward mode mismatch")
-    _require(env.use_rel_reward == (cfg.task == "jimu"), "Task relative reward switch mismatch")
+    _require(env.use_rel_reward == (cfg.task == "building_blocks"), "Task relative reward switch mismatch")
     if check_assets:
         model_root = _path(cfg.actor.model.model_path, "Pi0.5 checkpoint")
         _require((model_root / "model.safetensors").is_file(), "Initial Pi0.5 must be the converted 59999 safetensors checkpoint")
@@ -72,7 +72,7 @@ def validate_experiment(
         required_names += [f"tactile/{side}.{kind}.npy"
                            for side in SIDE_ORDER for kind in ("pointcloud", "difference")]
         for episode_id in reset_dataset.episode_ids:
-            if cfg.task == "shiguan":
+            if cfg.task == "test_cube":
                 _require(episode_id.startswith("use_both_arms_collaboratively_"),
                          f"Shiguan reset is not from the double-arm pool: {episode_id}")
             for relative in required_names:
@@ -128,18 +128,38 @@ def validate_experiment(
     }
 
 
+def validate_rollout(cfg, *, check_assets=True, check_imports=False):
+    """Validate standalone inference without examining any reward-model assets."""
+    env = cfg.env.train
+    _require(env.reward_model is None and cfg.actor.model.openpi.noise_method == "flow_ode",
+             "Standalone rollout must be ODE without an RM")
+    if check_assets:
+        from .wm_runtime import validate_public_contract
+        from .reset_data import ResetDataset
+        validate_public_contract(env.world_model, hash_weights=False)
+        _path(Path(cfg.actor.model.model_path) / "model.safetensors", "Pi0.5 base")
+        _path(cfg.actor.model.openpi_data.norm_stats_path, "Normalization")
+        _path(env.world_model.renderer.settings_file, "Motion settings")
+        ResetDataset(env.world_model.reset_cache, env.world_model.selection_manifest)
+    if check_imports:
+        for name in ("physcanvas_pi05.backend", "rlinf.models.embodiment.openpi_rlinf", "diffusers"):
+            importlib.import_module(name)
+    return {"task": cfg.task, "sampler": "flow_ode", "rm_scoring": False}
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--task", choices=["jimu", "shiguan"], required=True)
+    parser.add_argument("--task", choices=TASK_NAMES, required=True)
+    parser.add_argument("--rollout", action="store_true", help="Check RM-free ODE inference instead of GRPO")
     parser.add_argument("--config-only", action="store_true", help="Skip assets/imports")
     parser.add_argument("--imports", action="store_true", help="Also import runtime modules, no model loads")
     parser.add_argument("--print-config", action="store_true")
     parser.add_argument("overrides", nargs="*")
     args = parser.parse_args()
-    cfg = compose_config(args.task, args.overrides)
+    cfg = (compose_rollout_config if args.rollout else compose_config)(args.task, args.overrides)
     if args.print_config:
         print(OmegaConf.to_yaml(cfg))
-    summary = validate_experiment(
+    summary = (validate_rollout if args.rollout else validate_experiment)(
         cfg, check_assets=not args.config_only,
         check_imports=args.imports and not args.config_only,
     )

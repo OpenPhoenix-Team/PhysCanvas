@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 export PHYSCANVAS_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-TASK=${1:-jimu}
-case "$TASK" in jimu|shiguan) ;; *) echo 'Expected jimu (building blocks) or shiguan (both-arm test tube)' >&2; return 2 ;; esac
+TASK=${1:-building_blocks}
+case "$TASK" in building_blocks|test_cube|jimu|shiguan) ;; *) echo 'Expected jimu (building blocks) or shiguan (both-arm test tube)' >&2; return 2 ;; esac
 if [[ -n ${PHYSCANVAS_PATHS_FILE:-} ]]; then
   source "$PHYSCANVAS_PATHS_FILE" "$TASK"
 elif [[ -f "$PHYSCANVAS_ROOT/scripts/local_paths.sh" ]]; then

@@ -77,6 +77,22 @@ class BackendTests(unittest.TestCase):
                                     renderer=renderer, dataset=FakeDataset())
         return backend, runtime, renderer
 
+    def test_partial_final_chunk_commits_only_requested_prefix(self):
+        for take in (1, 8, 9, 12, 15):
+            with self.subTest(frames=take):
+                backend, runtime, _ = self.make()
+                sid = backend.reset_groups(num_groups=1, group_size=1, prompt="sort blocks")["session_ids"][0]
+                actions = np.arange(16 * 14, dtype=np.float32).reshape(1, 16, 14)
+                out = backend.rollout16([sid], actions, frames=take, audit_session_id=sid)
+                obs = out["observations"][0]
+                self.assertEqual(len(runtime.calls), (take + 7) // 8)
+                self.assertEqual(out["rgb_panel_video"].shape[1], take)
+                self.assertEqual(len(out["audit_motion_panel_video"]), take)
+                self.assertEqual(obs["wm"]["generated_frame_index"], take)
+                np.testing.assert_array_equal(obs["observation.state"], actions[0, take - 1])
+                np.testing.assert_array_equal(obs["observation.images.base_0"],
+                                              out["rgb_panel_video"][0, -1, :, :224].transpose(2, 0, 1))
+
     def test_two_chunks_four_wm_calls_use_generated_feedback(self):
         backend, runtime, renderer = self.make()
         reset = backend.reset_groups(num_groups=1, group_size=1, prompt="sort blocks")

@@ -11,10 +11,10 @@ export PROMPT_EMBEDDING=/absolute/path/to/default_prompt_embeds.pth
 export CVPR2026_WM_PROMPT_EMBEDDING="$PROMPT_EMBEDDING"
 export MOTION_SETTINGS=/absolute/path/to/renderer_settings.json
 case "${1:?task}" in
-  jimu)
+  building_blocks|jimu)
     export RESET_CACHE=/absolute/path/to/private/building_blocks/cache
     export RM_CHECKPOINT=/absolute/path/to/private/building_blocks/rm.pt ;;
-  shiguan)
+  test_cube|shiguan)
     export RESET_CACHE=/absolute/path/to/private/test_tube/cache
     export RM_CHECKPOINT=/absolute/path/to/private/test_tube/rm.pt ;;
 esac

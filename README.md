@@ -161,7 +161,7 @@ Check `COMPLETED.json` and video frame counts before using the results. FID/FVD 
 
 ## Pi0.5 policies: closed-loop rollout and GRPO
 
-The [policy guide](policy/README.md) adds two tasks: **building blocks** (`jimu`) and **both-arm test tube** (`shiguan`). Pi0.5 proposes 16 actions from the current observation. The existing PhysCanvas world model generates two successive 8-frame segments, and a three-view reward model scores the generated frames. If the episode continues, Pi0.5 replans from the latest generated observation. During GRPO, the policy's action expert and projections are updated; the visual and tactile encoders stay frozen.
+The [policy guide](policy/README.md) covers `building_blocks` and `test_cube` (both-arm test tube). Standalone Pi0.5 uses Flow-ODE and replans from the latest WM observation up to the requested frame count, without a reward model. GRPO collects Flow-SDE trajectories, scores generated RGB with a task-specific three-view RM and updates the action expert while keeping the visual and tactile encoders frozen.
 
 | To run | Start here |
 |---|---|
