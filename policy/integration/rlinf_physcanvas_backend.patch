@@ -1,0 +1,10 @@
+--- a/rlinf/envs/world_model/jimu_wm_grpo_env.py
++++ b/rlinf/envs/world_model/jimu_wm_grpo_env.py
+@@ -300,1 +300,6 @@
+-        self.client = client or LocalJimuWmBackend(
++        backend_cls = LocalJimuWmBackend
++        if str(_cfg_get(cfg.world_model, "backend", "inprocess")) == "physcanvas":
++            from physcanvas_pi05.backend import PhysCanvasBackend
++
++            backend_cls = PhysCanvasBackend
++        self.client = client or backend_cls(

@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "repo_id": "your-team/pi05-jimu-shiguan",
+  "episodes": [
+    {
+      "episode_dir": "/data/raw/jimu/episode_000001",
+      "physical_episode_id": "jimu-demonstration-000001",
+      "task": "jimu",
+      "prompt": "Separate the building blocks and place them into the bags with matching colors.",
+      "arm_mode": "bimanual",
+      "swap_robot_sides": false,
+      "head_variants": ["raw"]
+    },
+    {
+      "episode_dir": "/data/raw/shiguan/episode_000001",
+      "physical_episode_id": "shiguan-double-arm-demonstration-000001",
+      "task": "shiguan_shuang",
+      "prompt": "Use both arms collaboratively to pick up the test tube and place it on the test tube rack.",
+      "arm_mode": "bimanual",
+      "swap_robot_sides": false,
+      "head_variants": ["raw", "remove_hand"]
+    }
+  ]
+}

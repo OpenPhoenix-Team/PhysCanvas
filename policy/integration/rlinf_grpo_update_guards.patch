@@ -1,0 +1,71 @@
+--- a/rlinf/workers/actor/embodied_fsdp_actor_worker.py
++++ b/rlinf/workers/actor/embodied_fsdp_actor_worker.py
+@@ -25,6 +25,7 @@
+ from rlinf.data.storage.lerobot import resolve_lerobot_repo_id
+ from rlinf.hybrid_engines.fsdp.fsdp_model_manager import FSDPModelManager
+ from rlinf.hybrid_engines.weight_syncer import WeightSyncer
++from rlinf.algorithms.grpo_update_guard import has_global_valid_samples
+ from rlinf.models import get_model
+ from rlinf.models.embodiment.base_policy import ForwardType
+ from rlinf.scheduler import Channel, Cluster, Worker
+@@ -525,6 +526,7 @@
+             f"{rollout_size} is not divisible by {batch_size_per_rank}"
+         )
+         metrics = {}
++        optimizer_minibatches = 0
+         update_epoch = self.cfg.algorithm.get("update_epoch", 1)
+         for _ in range(update_epoch):
+             rollout_dataloader_iter = split_dict_to_chunk(
+@@ -543,6 +545,22 @@
+                     f"{train_global_batch_size=}, {self.cfg.actor.micro_batch_size}"
+                 )
+ 
++                # The decision must be collective: a locally empty rank still
++                # participates in FSDP forward/backward if any rank is valid.
++                # A globally empty minibatch must not advance AdamW momentum,
++                # weight decay, optimizer step counters, or the LR scheduler.
++                has_valid = has_global_valid_samples(
++                    train_global_batch.get("loss_mask"),
++                    local_batch_size=train_global_batch_size,
++                    device=self.device,
++                )
++                append_to_dict(metrics, {
++                    "actor/skipped_empty_minibatch": float(not has_valid)
++                })
++                if not has_valid:
++                    self.optimizer.zero_grad(set_to_none=True)
++                    continue
++
+                 train_micro_batch = split_dict_to_chunk(
+                     train_global_batch,
+                     train_global_batch_size // self.cfg.actor.micro_batch_size,
+@@ -562,6 +580,7 @@
+                 self.torch_platform.empty_cache()
+ 
+                 grad_norm, lr_list = self.optimizer_step()
++                optimizer_minibatches += 1
+                 data = {
+                     "actor/grad_norm": grad_norm,
+                     "actor/lr": lr_list[0],
+@@ -570,7 +589,12 @@
+                     data["critic/lr"] = lr_list[1]
+                 append_to_dict(metrics, data)
+         # put LR scheduler step here
+-        self.lr_scheduler.step()
++        if optimizer_minibatches:
++            self.lr_scheduler.step()
++        append_to_dict(metrics, {
++            "actor/optimizer_minibatches": float(optimizer_minibatches),
++            "actor/skipped_empty_update": float(optimizer_minibatches == 0),
++        })
+         self.optimizer.zero_grad()
+         clear_memory()
+         explained_variance_stats = pop_critic_explained_variance_stats(metrics)
+@@ -662,6 +686,7 @@
+         }
+ 
+         if SupportedModel(self.cfg.actor.model.model_type) in [
++            SupportedModel.OPENPI_RLINF,
+             SupportedModel.GR00T_N1D6,
+             SupportedModel.GR00T_N1D7,
+         ]:

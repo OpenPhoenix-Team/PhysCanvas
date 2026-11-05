@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+assets/
+outputs/
+reports/
+verification/
+runtime_deps/
+scripts/local_paths.sh
+configs/local_*.json
+.venv*/
+.cache/
+wandb/
+.DS_Store
+policy_training/openpi/checkpoints/
+policy_training/openpi/assets/
